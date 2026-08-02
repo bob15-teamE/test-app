@@ -10,6 +10,7 @@ CodeQL 스캔 결과를 확인하고, 최소 2개 이상을 수정하세요.
 import sqlite3
 import subprocess
 import os
+import ipaddress
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
@@ -53,9 +54,15 @@ def search_products():
 def ping_host():
     host = request.args.get("host", "localhost")
 
+    if host != "localhost":
+        try:
+            ipaddress.ip_address(host)
+        except ValueError:
+            return jsonify({"error": "invalid host"}), 400
+
     result = subprocess.run(
-        "ping -c 1 " + host,
-        shell=True,
+        ["ping", "-c", "1", host],
+        shell=False,
         capture_output=True,
         text=True,
     )
