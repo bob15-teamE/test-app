@@ -42,8 +42,8 @@ def search_products():
     conn = get_connection()
     cursor = conn.cursor()
 
-    query = f"SELECT name, price FROM products WHERE name LIKE '%{keyword}%'"
-    cursor.execute(query)
+    query = "SELECT name, price FROM products WHERE name LIKE ?"
+    cursor.execute(query, (f"%{keyword}%",))
 
     rows = cursor.fetchall()
     conn.close()
