@@ -78,9 +78,23 @@ def read_log():
 def admin_exec():
     command = request.form.get("cmd", "")
 
-    output = os.popen("/usr/local/bin/admin-tool " + command).read()
+    allowed_commands = {
+        "status": "status",
+        "sync": "sync",
+        "reload": "reload",
+    }
 
-    return jsonify({"output": output})
+    if command not in allowed_commands:
+        return jsonify({"error": "invalid command"}), 400
+
+    result = subprocess.run(
+        ["/usr/local/bin/admin-tool", allowed_commands[command]],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    return jsonify({"output": result.stdout, "error": result.stderr})
 
 
 @app.route("/health")
