@@ -1,0 +1,5 @@
+# Default code owner for this repository.
+* @marimo00
+
+# Protect ownership rules themselves.
+/.github/CODEOWNERS @marimo00
